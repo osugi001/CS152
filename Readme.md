@@ -14,6 +14,9 @@
 
 
 * (Q2) Report the running time of the copy command.
+* Since I'm using Windows cmd, I need a workaround method, here it is calculated to be around 12 seconds but because I was typing as well, -6 seconds it is supposed to be around 5-6 seconds.
+* ![1](https://github.com/osugi001/CS152/assets/102548267/53a9be79-045e-4e8f-b1ff-8b11d9fccfef)
+
 
 * (Q3) How do the two numbers compare? (The running times of copying the file through your program and the operating system.) Explain IN YOUR OWN WORDS why you see these results.
 
