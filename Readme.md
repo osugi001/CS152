@@ -66,13 +66,12 @@ Hostname: class-225.cs.ucr.edu
 * (Q7) the program runs
   ![Untitled-document-Google-Docs (5)](https://github.com/osugi001/CS152/assets/102548267/f26816f1-c48c-434c-b3ff-050873d69b02)
 
-*(Q8)
-*local to hdfs
+* (Q8)local to hdfs
 Copied 2271210910 bytes from file:///c/Users/owens/cs167/workspace/osugi001_lab3/AREAWATER_osugi001.csv to hdfs:///user/osugi001/output.csv in 9.6415128 seconds
-*hdfs to local
+* hdfs to local
 Copied 2271210910 bytes from hdfs:///user/osugi001/output.csv to file:///c/Users/owens/cs167/workspace/osugi001_lab3/AREAWATER_osugi001.csv in 10.2341245 seconds
-*hdfs to hdfs
+* hdfs to hdfs
 Copied 2271210910 bytes from hdfs:///user/osugi001/output.csv to hdfs:///user/osugi001/output2.csv in 10.2341249 seconds 
-*(Q9) the run time compared to Q8 is a bit longer but not that different the average runtime is around 13 seconds.
+* (Q9) the run time compared to Q8 is a bit longer but not that different the average runtime is around 13 seconds.
 
 
