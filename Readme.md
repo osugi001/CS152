@@ -1,77 +1,60 @@
-# Lab 3
+# Lab 4
 
 ## Student information
 
 * Full name: Owen Sugiarto
-* E-mail:osugi001@ucr.edu
+* E-mail: osugi001@ucr.edu
 * UCR NetID: osugi001
-* Student ID: 862296300
+* Student ID: 8632296300
 
 ## Answers
 
-* (Q1) Verify the file size and report the running time.
-![Untitled-document-Google-Docs](https://github.com/osugi001/CS152/assets/102548267/9793983d-4d6d-4a32-a55d-bfc70e147890)
+* (Q1) What do you think the line `job.setJarByClass(Filter.class);` does?
+* This line tells Hadoop which jar file contains the classes needed for the MapReduce job.
 
+* (Q2) What is the effect of the line `job.setNumReduceTasks(0);`?
+* This sets the number of reduce tasks to zero,
 
-* (Q2) Report the running time of the copy command.
-* Since I'm using Windows cmd, I need a workaround method, here it is calculated to be around 12 seconds but because I was typing as well, -6 seconds it is supposed to be around 5-6 seconds.
- ![1](https://github.com/osugi001/CS152/assets/102548267/53a9be79-045e-4e8f-b1ff-8b11d9fccfef)
+* (Q3) Where does the `main` function run? (Driver node, Master node, or an executor node).
+* The main function runs on the Driver node, also known as the Master node. It's responsible for setting up the job configuration and submitting the job. The actual data processing (map and reduce tasks) occurs on executor nodes within the cluster.
 
+* (Q4) How many lines do you see in the output?
+* 27972 Lines.
+ ![Untitled-document-Google-Docs (6)](https://github.com/osugi001/CS152/assets/102548267/f10d2745-6738-4a52-97cb-2d36249063ab)
 
-* (Q3) How do the two numbers compare? (The running times of copying the file through your program and the operating system.) Explain IN YOUR OWN WORDS why you see these results.
-*  the windows copy command is faster, I think it is because command line tools in general have more direct access, have less overhead and are optimized for specific tasks.
-
-
-* (Q4) Does the program run after you change the default file system to HDFS? What is the error message, if any, that you get?
-* In this part, I used 3 terminal, GIT, VSC, and windows terminal, one to run hdfs namenode -format, & hdfs namenode
-* The other one to run hdfs datanode, and lastly to run hdfs dfsadmin -report
-
-![Untitled-document-Google-Docs (1)](https://github.com/osugi001/CS152/assets/102548267/d3585624-a871-4d08-83c1-ad367d3e6259)
-![Untitled-document-Google-Docs (2)](https://github.com/osugi001/CS152/assets/102548267/42718e03-6d4b-47aa-8201-8b9961a24e4d)
-![Untitled-document-Google-Docs (3)](https://github.com/osugi001/CS152/assets/102548267/940f9100-3468-4a39-a9a2-a9a2d37812f0)
+* (Q5) How many files are produced in the output?
+![Untitled-document-Google-Docs (7)](https://github.com/osugi001/CS152/assets/102548267/3e9a7544-e908-4915-8dfa-7ab944076539)
 
 
 
-* (Q5) Use your program to test the following cases and record the running time for each case.
-* Q5.)Configured Capacity: 207929917440 (193.65 GB)
-Present Capacity: 200774180864 (186.99 GB)
-DFS Remaining: 200774156288 (186.99 GB)
-DFS Used: 24576 (24 KB)
-DFS Used%: 0.00%
-Replicated Blocks:
-        Under replicated blocks: 0
-        Blocks with corrupt replicas: 0
-        Missing blocks: 0
-        Missing blocks (with replication factor 1): 0
-        Low redundancy blocks with highest priority to recover: 0
-        Pending deletion blocks: 0
-Erasure Coded Block Groups:
-        Low redundancy block groups: 0
-        Block groups with corrupt internal blocks: 0
-        Missing block groups: 0
-        Low redundancy blocks with highest priority to recover: 0
-        Pending deletion blocks: 0
-
--------------------------------------------------
-Live datanodes (1):
-
-Name: 169.235.28.225:9866 (class-225.cs.ucr.edu)
-Hostname: class-225.cs.ucr.edu
+* (Q6) Explain this number based on the input file size and default block size.
+* The mapper task has been executed within the Filter program, resulting in a single output file named part-m-0000. This file comprises 27,972 entries, and each of these entries has a response code of 200.
 
 
-* (Q6) 
- ![Untitled-document-Google-Docs (4)](https://github.com/osugi001/CS152/assets/102548267/397a118e-7e2f-46ec-a083-fd5293bf6220)
+* (Q7) How many files are produced in the output directory and how many lines are there in each file?
+* 4 lines 00000 file and 0 lines in 00001 file
+* ![Untitled-document-Google-Docs (8)](https://github.com/osugi001/CS152/assets/102548267/faec9692-6eb9-4ea5-ba2d-258356a04a12)
 
 
-* (Q7) the program runs
-  ![Untitled-document-Google-Docs (5)](https://github.com/osugi001/CS152/assets/102548267/f26816f1-c48c-434c-b3ff-050873d69b02)
+* (Q8) Explain these numbers based on the number of reducers and number of response codes in the input file.
+* Same thing occur just like in question 6. The mapper task has been executed within the aggregation program, resulting in a double output file named part-m-0000. 
 
-* (Q8)local to hdfs
-Copied 2271210910 bytes from file:///c/Users/owens/cs167/workspace/osugi001_lab3/AREAWATER_osugi001.csv to hdfs:///user/osugi001/output.csv in 9.6415128 seconds
-* hdfs to local
-Copied 2271210910 bytes from hdfs:///user/osugi001/output.csv to file:///c/Users/owens/cs167/workspace/osugi001_lab3/AREAWATER_osugi001.csv in 10.2341245 seconds
-* hdfs to hdfs
-Copied 2271210910 bytes from hdfs:///user/osugi001/output.csv to hdfs:///user/osugi001/output2.csv in 10.2341249 seconds 
-* (Q9) the run time compared to Q8 is a bit longer but not that different the average runtime is around 13 seconds.
+
+* (Q9) How many files are produced in the output directory and how many lines are there in each file?
+* For r 000000 there are 5 lines for 000001 there are 2 lines
+  ![Untitled-document-Google-Docs (8)](https://github.com/osugi001/CS152/assets/102548267/20bcb07d-b50c-415d-8b2f-56d655369b1d)
+
+
+* (Q10) Explain these numbers based on the number of reducers and number of response codes in the input file.
+* The entries were directed to a single reducer within the aggregation program, which explains why there is no data or output in the file part-r-00001. The output file lists the response codes of the entries along with the cumulative byte size for all entries that share the same response code.
+
+* (Q11) How many files are produced in the output directory and how many lines are there in each file?
+* 000000 file is 1, 000001 is 0
+  ![Untitled-document-Google-Docs (9)](https://github.com/osugi001/CS152/assets/102548267/c3c0d631-d222-4e80-af54-73914c6fcb49)
+
+
+* (Q12) Explain these numbers based on the number of reducers and number of response codes in the input file.
+* The reason there is only a single output file is that the aggregation operation on the filtered data resulted in a dataset consisting exclusively of records with a response code of 200. This acts similarly to a join condition in a database. Consequently, all the entries were processed by only one reducer, which is why the part-r-00001 file is empty. Hence, the grand total of 37,551,809 bytes is calculated solely from the records that have a response code of 200.
+
 
 
