@@ -1,4 +1,4 @@
-# Lab 4
+# Lab 5
 
 ## Student information
 
@@ -9,52 +9,48 @@
 
 ## Answers
 
-* (Q1) What do you think the line `job.setJarByClass(Filter.class);` does?
-* This line tells Hadoop which jar file contains the classes needed for the MapReduce job.
+* Q1. Yes, it will use your cluster if the spark-submit command specifies a cluster manager (like YARN, Mesos, or Spark's standalone cluster manager) and if the input data is in HDFS, allowing Spark to distribute the work across multiple nodes in the cluster.
 
-* (Q2) What is the effect of the line `job.setNumReduceTasks(0);`?
-* This sets the number of reduce tasks to zero,
+* Q2.yes the application ran on the cluster I started because it looks like there is one completed applications. In the spark web interface and there is one under the worker node under the finished executors.
 
-* (Q3) Where does the `main` function run? (Driver node, Master node, or an executor node).
-* The main function runs on the Driver node, also known as the Master node. It's responsible for setting up the job configuration and submitting the job. The actual data processing (map and reduce tasks) occurs on executor nodes within the cluster.
+* Q3. Using Spark master ‘local[*]’
+Number of lines in the log file 30970
 
-* (Q4) How many lines do you see in the output?
-* 27972 Lines.
- ![Untitled-document-Google-Docs (6)](https://github.com/osugi001/CS152/assets/102548267/f10d2745-6738-4a52-97cb-2d36249063ab)
+* Q4. Using Spark master ‘spark://class-225:7077’
+Using Spark’s default log4j2 profile:  org/apache/spark/log4j2-defaults.properties
+Number of lines in the log file 30970
 
-* (Q5) How many files are produced in the output?
-![Untitled-document-Google-Docs (7)](https://github.com/osugi001/CS152/assets/102548267/3e9a7544-e908-4915-8dfa-7ab944076539)
+* Q5.
 
+24/02/08 21:28:32 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:0+1169610
 
+24/02/08 21:28:32 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:1169610+1169610
 
-* (Q6) Explain this number based on the input file size and default block size.
-* The mapper task has been executed within the Filter program, resulting in a single output file named part-m-0000. This file comprises 27,972 entries, and each of these entries has a response code of 200.
+* Q6. splits :  
+24/02/08 21:29:42 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:0+1169610
 
+24/02/08 21:29:42 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:1169610+1169610
 
-* (Q7) How many files are produced in the output directory and how many lines are there in each file?
-* 4 lines 00000 file and 0 lines in 00001 file
-* ![Untitled-document-Google-Docs (8)](https://github.com/osugi001/CS152/assets/102548267/faec9692-6eb9-4ea5-ba2d-258356a04a12)
+24/02/08 21:30:11 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:0+1169610
 
+24/02/08 21:30:12 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:1169610+1169610
 
-* (Q8) Explain these numbers based on the number of reducers and number of response codes in the input file.
-* Same thing occur just like in question 6. The mapper task has been executed within the aggregation program, resulting in a double output file named part-m-0000. 
+* (Q7) Compare this number to the one you got earlier.
+Q5 we get two input file splits while question 6 we get 4 input files.
 
+* Q8.) I think the reason why we got this number because the increase in the number of input splits from Q5 to Q6 likely reflects a change in the parallelism level or the execution of multiple actions that caused Spark to partition the input data differently or log the partitioning multiple times.
 
-* (Q9) How many files are produced in the output directory and how many lines are there in each file?
-* For r 000000 there are 5 lines for 000001 there are 2 lines
-  ![Untitled-document-Google-Docs (8)](https://github.com/osugi001/CS152/assets/102548267/20bcb07d-b50c-415d-8b2f-56d655369b1d)
+* Q9.)To make the file is read only once, cache the data in memory after loading it by adding logFile.persist(StorageLevel.MEMORY_ONLY()); to your code. This way, subsequent operations use the cached data instead of re-reading the file.
 
+* Q10.)The program will likely have two stages because of the transformations and actions you've applied. The stages are divided as follows:
 
-* (Q10) Explain these numbers based on the number of reducers and number of response codes in the input file.
-* The entries were directed to a single reducer within the aggregation program, which explains why there is no data or output in the file part-r-00001. The output file lists the response codes of the entries along with the cumulative byte size for all entries that share the same response code.
+Stage involves reading the data and mapping each line to a pair of using mapToPair. This is a transformation step.
 
-* (Q11) How many files are produced in the output directory and how many lines are there in each file?
-* 000000 file is 1, 000001 is 0
-  ![Untitled-document-Google-Docs (9)](https://github.com/osugi001/CS152/assets/102548267/c3c0d631-d222-4e80-af54-73914c6fcb49)
+Stage 2, involves the countByKey action, which triggers the shuffle of data across the cluster to count all keys (response codes) together. Shuffling data requires Spark to write intermediate results to disk, marking the end of the first stage and the beginning of the second stage.
 
 
-* (Q12) Explain these numbers based on the number of reducers and number of response codes in the input file.
-* The reason there is only a single output file is that the aggregation operation on the filtered data resulted in a dataset consisting exclusively of records with a response code of 200. This acts similarly to a join condition in a database. Consequently, all the entries were processed by only one reducer, which is why the part-r-00001 file is empty. Hence, the grand total of 37,551,809 bytes is calculated solely from the records that have a response code of 200.
+* Q11.) program has two stages because the first part processes the data (turning lines into pairs), and the second part counts these pairs across all data. Counting requires gathering information from across the cluster, which splits the job into two stages at this "shuffling" point where data gets rearranged.
+
 
 
 
