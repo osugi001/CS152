@@ -1,4 +1,4 @@
-# Lab 5
+# Lab 6
 
 ## Student information
 
@@ -9,48 +9,72 @@
 
 ## Answers
 
-* Q1. Yes, it will use your cluster if the spark-submit command specifies a cluster manager (like YARN, Mesos, or Spark's standalone cluster manager) and if the input data is in HDFS, allowing Spark to distribute the work across multiple nodes in the cluster.
-
-* Q2.yes the application ran on the cluster I started because it looks like there is one completed applications. In the spark web interface and there is one under the worker node under the finished executors.
-
-* Q3. Using Spark master ‘local[*]’
-Number of lines in the log file 30970
-
-* Q4. Using Spark master ‘spark://class-225:7077’
-Using Spark’s default log4j2 profile:  org/apache/spark/log4j2-defaults.properties
-Number of lines in the log file 30970
-
-* Q5.
-
-24/02/08 21:28:32 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:0+1169610
-
-24/02/08 21:28:32 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:1169610+1169610
-
-* Q6. splits :  
-24/02/08 21:29:42 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:0+1169610
-
-24/02/08 21:29:42 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:1169610+1169610
-
-24/02/08 21:30:11 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:0+1169610
-
-24/02/08 21:30:12 INFO HadoopRDD: Input split: C:/Users/owens/CS167/workspace/osugi001_lab5/nasa_19950801.tsv:1169610+1169610
-
-* (Q7) Compare this number to the one you got earlier.
-Q5 we get two input file splits while question 6 we get 4 input files.
-
-* Q8.) I think the reason why we got this number because the increase in the number of input splits from Q5 to Q6 likely reflects a change in the parallelism level or the execution of multiple actions that caused Spark to partition the input data differently or log the partitioning multiple times.
-
-* Q9.)To make the file is read only once, cache the data in memory after loading it by adding logFile.persist(StorageLevel.MEMORY_ONLY()); to your code. This way, subsequent operations use the cached data instead of re-reading the file.
-
-* Q10.)The program will likely have two stages because of the transformations and actions you've applied. The stages are divided as follows:
-
-Stage involves reading the data and mapping each line to a pair of using mapToPair. This is a transformation step.
-
-Stage 2, involves the countByKey action, which triggers the shuffle of data across the cluster to count all keys (response codes) together. Shuffling data requires Spark to write intermediate results to disk, marking the end of the first stage and the beginning of the second stage.
+*Q1.) 
+The stub code requires two command-line arguments: command, which specifies the operation to perform, and inputfile, which is the path to the dataset to be processed.
 
 
-* Q11.) program has two stages because the first part processes the data (turning lines into pairs), and the second part counts these pairs across all data. Counting requires gathering information from across the cluster, which splits the job into two stages at this "shuffling" point where data gets rearranged.
 
 
+*Q2.)
+case "avg-bytes-by-code" =>
+// Define zero value for the aggregate (sum of bytes, count)
+val zeroValue = (0L, 0L)
+
+// Define seqOp to combine values within a partition
+val seqOp = (accumulator: (Long, Long), element: (String, Long)) => (accumulator._1 + element._2, accumulator._2 + 1)
+
+// Define combOp to merge values across partitions
+val combOp = (accumulator1: (Long, Long), accumulator2: (Long, Long)) => (accumulator1._1 + accumulator2._1, accumulator1._2 + accumulator2._2)
+
+// Use aggregateByKey to compute sum and count in one pass
+val averages: RDD[(String, (Long, Long))] = loglinesByCodeAndBytes.aggregateByKey(zeroValue)(seqOp, combOp)
+.mapValues { case (sum, count) => (sum, count) }
+
+println(s"Average bytes per code for the file '$inputfile'")
+println("Code,Avg(bytes)")
+averages.collect().sortBy(_._1).foreach { case (code, (sum, count)) =>
+println(s"$code,${sum.toDouble / count}")
+}
+
+*Explanation:
+This code calculates the average bytes per response code in an RDD. It does so in one pass by using aggregateByKey with a zero value (tuple of 0s for sum and count), a seqOp to sum bytes and count occurrences within each partition, and a combOp to merge these sums and counts across partitions. Finally, it maps over these results to compute the average bytes for each code and prints them.
+
+
+*Q3.)
+The type of the attributes time and bytes this time will be strings. This is because without the inferSchema option enabled, Spark does not attempt to guess the data type of each column and defaults to treating them as strings.
+
+*Q4.)option 2,
+
+case "comparison" =>
+  val filterTimestamp: Long = args(2).toLong
+  println(s"Comparison of the number of lines per code before and after $filterTimestamp on file '$inputfile'")
+  println("Code,CountBefore,CountAfter")
+
+  val countsBefore = input.filter($"time" < filterTimestamp)
+    .groupBy("response").count()
+    .withColumnRenamed("count", "CountBefore")
+  
+  val countsAfter = input.filter($"time" >= filterTimestamp)
+    .groupBy("response").count()
+    .withColumnRenamed("count", "CountAfter")
+
+  val comparedResults = countsBefore.join(countsAfter, "response", "outer")
+    .select(coalesce(countsBefore("response"), countsAfter("response")).alias("response"), 
+            coalesce(countsBefore("CountBefore"), lit(0)).alias("CountBefore"), 
+            coalesce(countsAfter("CountAfter"), lit(0)).alias("CountAfter"))
+    .orderBy("response")
+
+  comparedResults.show()
+
+
+I also had to add
+
+import spark.implicits._
+
+On top.
+
+
+*explanation:
+This code segment compares the number of log lines per response code before and after a specified timestamp in a Spark DataFrame. It first filters the data into two groups: countsBefore for entries before the timestamp and countsAfter for those on or after the timestamp. Each group is then aggregated by response code to count entries. The results are joined on the response code, ensuring no data is lost with an outer join, and zeros are filled in where counts are missing. Finally, it orders the results by response code and displays the comparison. The import spark.implicits._ enables the use of the $"columnName" syntax for easier DataFrame column referencing.
 
 
