@@ -307,6 +307,8 @@ table =
 
 
 Run.sh = 
+#!/usr/bin/env sh
+mvn clean package
 spark-submit --master "local[*]" --class edu.ucr.cs.cs167.osugi001.PreprocessTweets ./target/osugi001_lab7-1.0-SNAPSHOT.jar ./Tweets_1m.json
 
 spark-submit --master "local[*]" --class edu.ucr.cs.cs167.osugi001.AnalyzeTweets ./target/osugi001_lab7-1.0-SNAPSHOT.jar top-lang ./Tweets_1m.json
