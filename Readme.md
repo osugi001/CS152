@@ -80,13 +80,13 @@ indicates that the CSV format does not support the complex data type STRUCT<coor
 
 Q7.1: What do you see in the output? Copy it here.
 tweets_1m.json
+![Q1-What-is-the-nesting-level-of-this-column-root-Google-Docs](https://github.com/osugi001/CS152/assets/102548267/349c8f5b-1499-4d95-a3d8-2e4578b8c79d)
 
 tweets.json
-
+same with different runtime
 tweets.parquet
-
-
-
+same with different runtime
+(runtime shown below)
 
 
 
@@ -107,13 +107,14 @@ The slight difference in run times between the two JSON files could be due to th
 In summary, Parquet's design for efficient data storage and access results in faster processing times compared to the text-based JSON format.
 
 Q8.1: What are the top languages that you see? Copy the output here
-tweets_1m.json
+tweets_1m.json 12.2 seconds
+![Q1-What-is-the-nesting-level-of-this-column-root-Google-Docs (1)](https://github.com/osugi001/CS152/assets/102548267/9b6be5ef-aeab-41db-a19b-c8d9a6360378)
+tweets.json 10.4 seconds
+tweets.parquet 5.6 seconds
+again both same values but different run time
 
 
-
-
-
-Q8.2: Do you also observe the same perfroamnce for the different file formats?
+Q8.2: Do you also observe the same performance for the different file formats?
 
 Yes same performance.
 
@@ -129,6 +130,7 @@ Yes same performance.
 Q9: After step B.3.2, how did the schema change? What was the effect of the explode function?
 Tweets_1m.json
 
+![Q1-What-is-the-nesting-level-of-this-column-root-Google-Docs (1)](https://github.com/osugi001/CS152/assets/102548267/602ca5fe-cb1d-4975-8f89-4b6b022295c8)
 
 
 | Country | Tweet Count | Lang | Lang Percent |
@@ -163,32 +165,29 @@ Tweets_1m.json
 Operation top-country-with-lang on file './Tweets_1m.json' finished in 20.238104999 seconds
 
 Tweets.json
-Using Spark master 'local[*]'
 Schema after step B.3.1:
 root
- |-- country: string (nullable = true)
- |-- tweet_count: long (nullable = false)
- |-- top_langs: array (nullable = true)
- |    |-- element: struct (containsNull = true)
- |    |    |-- _1: string (nullable = true)
- |    |    |-- _2: integer (nullable = false)
-
+|-- country: string (nullable = true)
+|-- tweet_count: long (nullable = false)
+|-- top_langs: array (nullable = true)
+| |-- element: struct (containsNull = true)
+| | |-- _1: string (nullable = true)
+| | |-- _2: integer (nullable = false)
 
 Schema after step B.3.2:
 root
- |-- country: string (nullable = true)
- |-- tweet_count: long (nullable = false)
- |-- top_langs: struct (nullable = true)
- |    |-- _1: string (nullable = true)
- |    |-- _2: integer (nullable = false)
-
+|-- country: string (nullable = true)
+|-- tweet_count: long (nullable = false)
+|-- top_langs: struct (nullable = true)
+| |-- _1: string (nullable = true)
+| |-- _2: integer (nullable = false)
 
 Schema after step B.3.3:
 root
- |-- country: string (nullable = true)
- |-- tweet_count: long (nullable = false)
- |-- lang: string (nullable = true)
- |-- lang_percent: double (nullable = true)
+|-- country: string (nullable = true)
+|-- tweet_count: long (nullable = false)
+|-- lang: string (nullable = true)
+|-- lang_percent: double (nullable = true)```
 
 
 | Country | Tweet Count | Lang | Lang Percent |
@@ -226,30 +225,29 @@ Operation top-country-with-lang on file './tweets.json' finished in 27.036789300
 lab7-1.0-SNAPSHOT.jar top-country-with-lang ./tweets.parquet
 Using Spark master 'local[*]'
 Schema after step B.3.1:
+Schema after step B.3.1:
 root
- |-- country: string (nullable = true)
- |-- tweet_count: long (nullable = false)
- |-- top_langs: array (nullable = true)
- |    |-- element: struct (containsNull = true)
- |    |    |-- _1: string (nullable = true)
- |    |    |-- _2: integer (nullable = false)
-
+|-- country: string (nullable = true)
+|-- tweet_count: long (nullable = false)
+|-- top_langs: array (nullable = true)
+| |-- element: struct (containsNull = true)
+| | |-- _1: string (nullable = true)
+| | |-- _2: integer (nullable = false)
 
 Schema after step B.3.2:
 root
- |-- country: string (nullable = true)
- |-- tweet_count: long (nullable = false)
- |-- top_langs: struct (nullable = true)
- |    |-- _1: string (nullable = true)
- |    |-- _2: integer (nullable = false)
-
+|-- country: string (nullable = true)
+|-- tweet_count: long (nullable = false)
+|-- top_langs: struct (nullable = true)
+| |-- _1: string (nullable = true)
+| |-- _2: integer (nullable = false)
 
 Schema after step B.3.3:
 root
- |-- country: string (nullable = true)
- |-- tweet_count: long (nullable = false)
- |-- lang: string (nullable = true)
- |-- lang_percent: double (nullable = true)
+|-- country: string (nullable = true)
+|-- tweet_count: long (nullable = false)
+|-- lang: string (nullable = true)
+|-- lang_percent: double (nullable = true)
 
 | Country | Tweet Count | Lang | Lang Percent |
 |---------|-------------|------|--------------|
@@ -291,11 +289,24 @@ Q11: Does the observed statistical value show a strong correlation between the t
 The observed statistical value for the correlation between a user's statuses_count and their followers_count is approximately 0.66. This value indicates a moderate positive correlation between the number of statuses a user posts and the number of followers they have.
 
 Q12.1: What are the top 10 hashtags? Copy paste your output here.
-
+![Q1-What-is-the-nesting-level-of-this-column-root-Google-Docs (2)](https://github.com/osugi001/CS152/assets/102548267/1137a098-9d43-43a6-a6d3-2ef94b9eb181)
+runtime 28.4 seconds
+for tweets.parquet is 12.5 seconds.
 
 Q12.2: For this operation, do you observe difference in performance when comparing the two different input files tweets.json and tweets.parquet?
 Yes the first was slower while the second one was faster 2x
 
+table = 
+| Command               | Tweets_1m.json | tweets.json | tweets.parquet |
+|-----------------------|----------------|-------------|----------------|
+| top-country           | 18.8           | 17.3        | 7.2            |
+| top-lang              | 12.2           | 10.4        | 5.6            |
+| top-country-with-lang | 20.2           | 27.0        | 10.4           |
+| corr                  | 9.2            | 9.1         | 7.5            |
+| top-hashtags          | N/A            | 28.4        | 12.5           |
+
+
+Run.sh = 
 spark-submit --master "local[*]" --class edu.ucr.cs.cs167.osugi001.PreprocessTweets ./target/osugi001_lab7-1.0-SNAPSHOT.jar ./Tweets_1m.json
 
 spark-submit --master "local[*]" --class edu.ucr.cs.cs167.osugi001.AnalyzeTweets ./target/osugi001_lab7-1.0-SNAPSHOT.jar top-lang ./Tweets_1m.json
