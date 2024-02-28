@@ -29,23 +29,65 @@
 ![image](https://github.com/osugi001/CS152/assets/102548267/e27480d9-3894-4709-bca2-cd5f18bef71d)
 
 * (Q4) What is your command to count the total number of records in the `tweets` collection and what is the output of the command?
-
+* first I moved from test to my database which i name "DATA"
+  ```
+  use DATA
+  ```
     ```javascript
-    // Replace here
+    db.tweets.countDocuments({}) 
     ```
 
 * (Q5) What is your command for this query?
 
     ```javascript
-    // Replace here
+    db.tweets.aggregate([
+  {
+    $match: {
+      "place.country_code": "JP",
+      "user.statuses_count": { $gt: 50000 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      user_name: "$user.name",
+      followers_count: "$user.followers_count",
+      statuses_count: "$user.statuses_count"
+    }
+  },
+  {
+    $sort: { followers_count: 1 }
+  }
+])
+
     ```
 
 * (Q6) How many records does your query return?
+* 16
 
 * (Q7) What is the command that retrieves the results without the _id field?
 
     ```javascript
-    // Replace here
+    db.tweets.aggregate([
+  {
+    $match: {
+      "place.country_code": "JP",
+      "user.statuses_count": { $gt: 50000 }
+    }
+  },
+  {
+    $project: {
+      _id: 0, 
+      user_name: "$user.name",
+      followers_count: "$user.followers_count",
+      statuses_count: "$user.statuses_count"
+    }
+  },
+  {
+    $sort: { followers_count: 1 }
+  }
+])
+
     ```
 
 * (Q8) What is the command to insert the sample document? What is the result of running the command?
