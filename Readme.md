@@ -122,6 +122,36 @@ it does accept it
 
 
 * (Q11) Where did the two new records appear in the sort order?
+
+  {
+    followers_count: { last_month: 550, this_month: 2200 },
+    statuses_count: 112000
+  },
+  { followers_count: 6986, statuses_count: 113460 },
+  { followers_count: 6745, statuses_count: 111304 },
+  { followers_count: [ 2100, 5000 ], statuses_count: 55000 },
+  { followers_count: 4578, statuses_count: 52056 },
+  { followers_count: 2606, statuses_count: 65492 },
+  { followers_count: 2278, statuses_count: 52308 },
+  { followers_count: 2197, statuses_count: 51928 },
+  { followers_count: 2049, statuses_count: 52624 },
+  { followers_count: 1320, statuses_count: 59010 },
+  { followers_count: 1165, statuses_count: 57928 },
+  { followers_count: 1004, statuses_count: 94497 },
+  { followers_count: 769, statuses_count: 90326 },
+  { followers_count: 769, statuses_count: 90327 },
+  { followers_count: 769, statuses_count: 90328 },
+  { followers_count: 769, statuses_count: 90329 },
+  { followers_count: 754, statuses_count: 70166 },
+  { followers_count: 522, statuses_count: 56256 }
+
+* (Q12) Why did they appear at these specific locations?
+* Numeric values are sorted from highest to lowest.
+An array ([2100, 5000]) is considered by its first element for sorting, placing it after singular numeric values higher than 2100.
+An object ({last_month: 550, this_month: 2200}) is sorted last, as MongoDB sorts objects differently from simple numeric values, typically placing them at the end when sorting numerically.
+
+
+* (Q13) Where did the two records appear in the ascending sort order? Explain your observation.
 [
   { followers_count: 522, statuses_count: 56256 },
   { followers_count: 754, statuses_count: 70166 },
@@ -144,15 +174,11 @@ it does accept it
     followers_count: { last_month: 550, this_month: 2200 },
     statuses_count: 112000
   }
-]
 
-* (Q12) Why did they appear at these specific locations?
+]
 * The record with followers_count as an array [2100, 5000] was placed between the numeric followers_count values of 2049 and 2197. This indicates that MongoDB, for sorting purposes, likely considered the first element of the array (2100).
 
 The record with followers_count as an object {last_month: 550, this_month: 2200} was placed at the end of the list. This positioning is because MongoDB sorts numeric values before object types, hence why a document with an object for followers_count appears after all documents with numeric followers_count values.
-
-
-* (Q13) Where did the two records appear in the ascending sort order? Explain your observation.
 
 
 * (Q14) Is MongoDB able to build the index on that field with the different value types stored in the `user.followers_count` field?
