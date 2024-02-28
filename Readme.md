@@ -123,27 +123,27 @@ it does accept it
 
 * (Q11) Where did the two new records appear in the sort order?
 
-  {
-    followers_count: { last_month: 550, this_month: 2200 },
-    statuses_count: 112000
-  },
-  { followers_count: 6986, statuses_count: 113460 },
-  { followers_count: 6745, statuses_count: 111304 },
-  { followers_count: [ 2100, 5000 ], statuses_count: 55000 },
-  { followers_count: 4578, statuses_count: 52056 },
-  { followers_count: 2606, statuses_count: 65492 },
-  { followers_count: 2278, statuses_count: 52308 },
-  { followers_count: 2197, statuses_count: 51928 },
-  { followers_count: 2049, statuses_count: 52624 },
-  { followers_count: 1320, statuses_count: 59010 },
-  { followers_count: 1165, statuses_count: 57928 },
-  { followers_count: 1004, statuses_count: 94497 },
-  { followers_count: 769, statuses_count: 90326 },
-  { followers_count: 769, statuses_count: 90327 },
-  { followers_count: 769, statuses_count: 90328 },
-  { followers_count: 769, statuses_count: 90329 },
-  { followers_count: 754, statuses_count: 70166 },
-  { followers_count: 522, statuses_count: 56256 }
+*  {
+*   followers_count: { last_month: 550, this_month: 2200 },
+*    statuses_count: 112000
+*  },
+*  { followers_count: 6986, statuses_count: 113460 },
+*  { followers_count: 6745, statuses_count: 111304 },
+*  { followers_count: [ 2100, 5000 ], statuses_count: 55000 },
+*  { followers_count: 4578, statuses_count: 52056 },
+*  { followers_count: 2606, statuses_count: 65492 },
+*  { followers_count: 2278, statuses_count: 52308 },
+*  { followers_count: 2197, statuses_count: 51928 },
+*  { followers_count: 2049, statuses_count: 52624 },
+*  { followers_count: 1320, statuses_count: 59010 },
+*  { followers_count: 1165, statuses_count: 57928 },
+*  { followers_count: 1004, statuses_count: 94497 },
+*  { followers_count: 769, statuses_count: 90326 },
+*  { followers_count: 769, statuses_count: 90327 },
+*  { followers_count: 769, statuses_count: 90328 },
+*  { followers_count: 769, statuses_count: 90329 },
+*  { followers_count: 754, statuses_count: 70166 },
+*  { followers_count: 522, statuses_count: 56256 }
 
 * (Q12) Why did they appear at these specific locations?
 * Numeric values are sorted from highest to lowest.
@@ -152,28 +152,28 @@ An object ({last_month: 550, this_month: 2200}) is sorted last, as MongoDB sorts
 
 
 * (Q13) Where did the two records appear in the ascending sort order? Explain your observation.
-[
-  { followers_count: 522, statuses_count: 56256 },
-  { followers_count: 754, statuses_count: 70166 },
-  { followers_count: 769, statuses_count: 90326 },
-  { followers_count: 769, statuses_count: 90327 },
-  { followers_count: 769, statuses_count: 90328 },
-  { followers_count: 769, statuses_count: 90329 },
-  { followers_count: 1004, statuses_count: 94497 },
-  { followers_count: 1165, statuses_count: 57928 },
-  { followers_count: 1320, statuses_count: 59010 },
-  { followers_count: 2049, statuses_count: 52624 },
-  { followers_count: [ 2100, 5000 ], statuses_count: 55000 },
-  { followers_count: 2197, statuses_count: 51928 },
-  { followers_count: 2278, statuses_count: 52308 },
-  { followers_count: 2606, statuses_count: 65492 },
-  { followers_count: 4578, statuses_count: 52056 },
-  { followers_count: 6745, statuses_count: 111304 },
-  { followers_count: 6986, statuses_count: 113460 },
-  {
-    followers_count: { last_month: 550, this_month: 2200 },
-    statuses_count: 112000
-  }
+*[
+*  { followers_count: 522, statuses_count: 56256 },
+*  { followers_count: 754, statuses_count: 70166 },
+*  { followers_count: 769, statuses_count: 90326 },
+*  { followers_count: 769, statuses_count: 90327 },
+*  { followers_count: 769, statuses_count: 90328 },
+*  { followers_count: 769, statuses_count: 90329 },
+*  { followers_count: 1004, statuses_count: 94497 },
+*  { followers_count: 1165, statuses_count: 57928 },
+*  { followers_count: 1320, statuses_count: 59010 },
+*  { followers_count: 2049, statuses_count: 52624 },
+*  { followers_count: [ 2100, 5000 ], statuses_count: 55000 },
+*  { followers_count: 2197, statuses_count: 51928 },
+*  { followers_count: 2278, statuses_count: 52308 },
+*  { followers_count: 2606, statuses_count: 65492 },
+*  { followers_count: 4578, statuses_count: 52056 },
+*  { followers_count: 6745, statuses_count: 111304 },
+*  { followers_count: 6986, statuses_count: 113460 },
+*  {
+*    followers_count: { last_month: 550, this_month: 2200 },
+*    statuses_count: 112000
+*  }
 
 ]
 * The record with followers_count as an array [2100, 5000] was placed between the numeric followers_count values of 2049 and 2197. This indicates that MongoDB, for sorting purposes, likely considered the first element of the array (2100).
@@ -182,12 +182,12 @@ The record with followers_count as an object {last_month: 550, this_month: 2200}
 
 
 * (Q14) Is MongoDB able to build the index on that field with the different value types stored in the `user.followers_count` field?
-
+Yes, MongoDB can build an index on a field even if the data types of the field's values vary across documents.
 
 * (Q15) What is your command for building the index?
 
     ```javascript
-    // Replace here
+    db.tweets.createIndex({ "user.followers_count": 1 })
     ```
 
 * (Q16) What is the output of the create index command?
