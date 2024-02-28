@@ -58,9 +58,8 @@
   {
     $sort: { followers_count: 1 }
   }
-])
-
-    ```
+  ])
+  ```
 
 * (Q6) How many records does your query return?
 * 16
@@ -86,30 +85,71 @@
   {
     $sort: { followers_count: 1 }
   }
-])
+  ])
 
     ```
 
 * (Q8) What is the command to insert the sample document? What is the result of running the command?
 
     ```javascript
-    // Replace here
+    // db.tweets.insertOne({
+  id: Long("921633456941125634"),
+  place: { country_code: 'JP', name: 'Japan', place_type: 'city' },
+  user: { user_name: 'xyz2', followers_count: [2100, 5000], statuses_count: 55000 },
+  hashtags: ['nature'],
+  lang: 'ja'
+  })
+
     ```
+    result :   acknowledged: true,
+  insertedId: ObjectId('65dedccd757fc07eed884472')
 
 
 * (Q9) Does MongoDB accept this document while the followers_count field has a different type than other records?
-
+it does accept it
 * (Q10) What is your command to insert this record?
 
     ```javascript
-    // Replace here
+    db.tweets.insertOne({
+  id: NumberLong('921633456941121354'),
+  place: { country_code: 'JP', name: 'Japan', place_type: 'city' },
+  user: { user_name: 'xyz3', followers_count: {last_month: 550, this_month: 2200}, statuses_count: 112000 },
+  hashtags: ['art', 'tour'],
+  lang: 'ja'
+  })
+
     ```
 
 
 * (Q11) Where did the two new records appear in the sort order?
-
+[
+  { followers_count: 522, statuses_count: 56256 },
+  { followers_count: 754, statuses_count: 70166 },
+  { followers_count: 769, statuses_count: 90326 },
+  { followers_count: 769, statuses_count: 90327 },
+  { followers_count: 769, statuses_count: 90328 },
+  { followers_count: 769, statuses_count: 90329 },
+  { followers_count: 1004, statuses_count: 94497 },
+  { followers_count: 1165, statuses_count: 57928 },
+  { followers_count: 1320, statuses_count: 59010 },
+  { followers_count: 2049, statuses_count: 52624 },
+  { followers_count: [ 2100, 5000 ], statuses_count: 55000 },
+  { followers_count: 2197, statuses_count: 51928 },
+  { followers_count: 2278, statuses_count: 52308 },
+  { followers_count: 2606, statuses_count: 65492 },
+  { followers_count: 4578, statuses_count: 52056 },
+  { followers_count: 6745, statuses_count: 111304 },
+  { followers_count: 6986, statuses_count: 113460 },
+  {
+    followers_count: { last_month: 550, this_month: 2200 },
+    statuses_count: 112000
+  }
+]
 
 * (Q12) Why did they appear at these specific locations?
+* The record with followers_count as an array [2100, 5000] was placed between the numeric followers_count values of 2049 and 2197. This indicates that MongoDB, for sorting purposes, likely considered the first element of the array (2100).
+
+The record with followers_count as an object {last_month: 550, this_month: 2200} was placed at the end of the list. This positioning is because MongoDB sorts numeric values before object types, hence why a document with an object for followers_count appears after all documents with numeric followers_count values.
 
 
 * (Q13) Where did the two records appear in the ascending sort order? Explain your observation.
