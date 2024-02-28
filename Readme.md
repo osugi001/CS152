@@ -11,9 +11,9 @@
 
 * (Q1) What is the schema of the file? Copy it to the README file and keep it for your reference.
 
-    ```
+
     ![image](https://github.com/osugi001/CS152/assets/102548267/585f59ef-fc82-4539-acf1-18fd6ad5088c)
-    ```
+
 
 * (Q2) What is your command to import the `tweets.json` file?
 
