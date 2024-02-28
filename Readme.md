@@ -18,14 +18,15 @@
 * (Q2) What is your command to import the `tweets.json` file?
 
     ```shell
-    # Replace here
+    mongoimport --db DATA --collection tweets --file ~/tweets.json
+
     ```
 
 * (Q3) What is the output of the import command?
-
-    ```text
-    # Replace here
-    ```
+```
+2024-02-27T21:34:52.606-0800    1000 document(s) imported successfully. 0 document(s) failed to import.
+```
+![image](https://github.com/osugi001/CS152/assets/102548267/e27480d9-3894-4709-bca2-cd5f18bef71d)
 
 * (Q4) What is your command to count the total number of records in the `tweets` collection and what is the output of the command?
 
