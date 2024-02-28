@@ -191,32 +191,72 @@ Yes, MongoDB can build an index on a field even if the data types of the field's
     ```
 
 * (Q16) What is the output of the create index command?
-
-    ```text
-    ```
+![image](https://github.com/osugi001/CS152/assets/102548267/ffd1f635-146e-48ae-a102-ec3e9d1033f9)
 
 * (Q17) What is your command for this query?
 
     ```javascript
-    // Replace here
+    db.tweets.aggregate([
+  {
+    $match: {
+      hashtags: { $in: ['job', 'hiring', 'IT'] }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      text: 1,
+      hashtags: 1,
+      "user.user_name": 1,
+      "user.followers_count": 1
+    }
+  },
+  {
+    $sort: { "user.followers_count": 1 }
+  },
+  
+  ])
+
     ```
 
 * (Q18) How many records are returned from this query?
 
     ```
-    // Replace here
+    24
     ```
 
 * (Q19) What is your command for this query?
     ```javascript
-    // Replace here
+    db.tweets.aggregate([
+  { 
+    $group: {
+      _id: "$place.country_code", 
+      totalTweets: { $sum: 1 } 
+    }
+  },
+  { $sort: { totalTweets: -1 } }, 
+  { $limit: 5 } 
+  ])
+
     ```
 
 * (Q20) What is the output of the command?
-
+![image](https://github.com/osugi001/CS152/assets/102548267/70db6f32-9c83-455b-ad60-b54aa23f71f8)
 * (Q21) What is your command for this query?
     ```javascript
-    // Replace here
+    db.tweets.aggregate([
+  { $unwind: "$hashtags" }, 
+  { 
+    $group: {
+      _id: "$hashtags", 
+      count: { $sum: 1 } 
+    }
+  },
+  { $sort: { count: -1 } }, 
+  { $limit: 5 } 
+  ])
+
     ```
 
 * (Q22) What is the output of the command?
+  ![image](https://github.com/osugi001/CS152/assets/102548267/daea7e09-cc17-4240-b669-6ea402839f0b)
